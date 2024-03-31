@@ -39,7 +39,7 @@ class HashTable {
     }
 
     void insert(K _key, V _value){
-        int bucket = this->hash(_key, B) % this->B;
+        int bucket = this->hash(_key) % this->B;
         if(this->table[bucket] == NULL){
             this->table[bucket] = new Node<K,V> (_key, _value);
         }else{
@@ -48,8 +48,10 @@ class HashTable {
                 if(aux->key == _key){
                     aux->value = _value;
                     return;
-                }else if(aux->next == NULL){
+                } 
+                if(aux->next == NULL){
                     aux->next = new Node<K,V>(_key, _value);
+                    return;
                 }
                 aux = aux->next;
             }
@@ -57,7 +59,7 @@ class HashTable {
     }
 
     Node <K,V> searchNode(Node <K,V> *_ptrNode, K _key){
-        int bucket = this->hash(_key, B) % this->B;
+        int bucket = this->hash(_key) % this->B;
         _ptrNode = this->table[bucket];
         if(_ptrNode == NULL){
             return NULL;
@@ -70,7 +72,7 @@ class HashTable {
     }
     
     void update(K _key){
-        int bucket = this->hash(_key, B) % this->B;
+        int bucket = this->hash(_key) % this->B;
         Node <K,V> * aux = this->table[bucket];
         if(aux != NULL){
         aux->entregado = true;
@@ -78,10 +80,14 @@ class HashTable {
     }
 
     void imprimirOrden(K _key){
-        int bucket = this->hash(_key, B) % this->B;
+        int bucket = this->hash(_key) % this->B;
         Node <K,V> * aux = this->table[bucket];
         if(aux != NULL){
-        cout << aux->value << endl;
+            if(aux->entregado == true ){
+                cout << "Entregado" << endl;
+            }else{
+                cout << aux->value << endl;                
+            }
         }
     }
 
@@ -92,7 +98,7 @@ class HashTable {
         int ret = 0;
         for (int i = 0; i < clave.size(); i++)
         {
-            ret += clave[i];
+            ret = 31 * ret + int(clave[i]);
         }
         return ret;
     }
@@ -103,31 +109,32 @@ class HashTable {
 
 int main()
 {
-
     int buckets;
     string entrada; 
     cin >> buckets; 
+    cin.ignore();
     HashTable<string, string> * t1 = new HashTable<string, string>((2 * buckets), hashModulo);
     for (int i = 0; i < buckets; i++)
     {
         getline(cin, entrada);     
         size_t pos1 = entrada.find(' ');
-        size_t pos2 = entrada.find(' ', pos1 + 1);
+        
 
         string orden =  entrada.substr(0,pos1);
-        string id = entrada.substr(pos1 + 1, pos2 - 1);      
-        string productos = entrada.substr(pos2 + 1);
+        string id_productos = entrada.substr(pos1 + 1);      
+        
 
-        cout << "Orden: " << orden << " ID: " << id << " Productos: " << productos << endl;
+       // cout << "Orden: " << orden << " ID: " << id << " Productos: " << productos << endl;
 
-/*         if(orden == "A"){
-            t1->insert(id,productos);
+         if(orden == "A"){
+            size_t pos2 = id_productos.find(' ');
+            string productos = id_productos.substr(pos2 + 1);
+            id_productos = id_productos.substr(0, pos2);
+            t1->insert(id_productos,productos);
         }else if(orden == "E"){
-            t1->update(id);
+            t1->update(id_productos);
         }else if (orden == "Q"){
-            t1->imprimirOrden(id);
+            t1->imprimirOrden(id_productos);
         } 
     }
-    */
-}
-}
+ }
