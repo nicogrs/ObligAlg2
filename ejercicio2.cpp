@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include <limits>
+#include "funciones/enteros.cpp"
 
 using namespace std;
 
@@ -12,17 +13,18 @@ class MaxHeap{
     T* heap;
     int next;
     int capacity;
+    int (*compereTo)(T,T);
     
     int father(int pos) {
         return pos / 2;
     }
 
     int left(int pos){
-        return (i * 2);
+        return (pos * 2);
     }
 
     int right(int pos){
-        return (i * 2) + 1;
+        return (pos * 2) + 1;
     }
 
 
@@ -30,7 +32,7 @@ class MaxHeap{
     void heapFloat(int pos){
         if (pos == 1) return;
         int fatherPos = father(pos);
-        if(heap[fatherPos] > heap[pos]){
+        if( this->compereTo(heap[fatherPos], heap[pos]) > 0 ){
             swap(fatherPos, pos);
             heapFloat(fatherPos);
         }
@@ -46,24 +48,34 @@ class MaxHeap{
         int leftPos = left(pos);
         int rightPos = right(pos);
         bool hasLeftChild = leftPos < this->next;
-        bool hasRightChild = rightPos < this.next;
+        bool hasRightChild = rightPos < this->next;
         if(!hasLeftChild) return;
-        if(!hasRightChild){
-            if(this.compareTo)
+        if(!hasRightChild){ 
+            if(this->compereTo(this->heap[pos], this->heap[left(pos)]) > 0){
+                swap(pos, leftPos);
+                sink(leftPos);
+            }
+        }else {
+            int posToCompare = this->compereTo(heap[leftPos], heap[rightPos]) < 0 ? leftPos : rightPos; 
+            if (this->compereTo(heap[pos],heap[posToCompare]) > 0){
+                swap(pos, posToCompare);
+                sink(posToCompare);
+            }
         }
     }
 
     public:
-    MaxHeap(int _capacity) : this.capacity = _capacity{
+    MaxHeap(int _capacity, int (*_compereTo)(T,T)) : capacity(_capacity) {
         this->next = 1;
         heap = new T[_capacity + 1]();
+        this->compereTo = _compereTo;
     }
 
     void insert (T elem){
         assert(!isFull());
         heap[next] = elem;
         next++;
-        heapFloat(next -1)
+        heapFloat(next -1);
 
     }
 
@@ -88,9 +100,48 @@ class MaxHeap{
         return next == 1;
     }
 
+    T getNext(){
+        return this->next;
+    }
+
 };
 
+int compararPesos(int p1, int p2){
+    return p2 - p1;
+}
+
 int main()
-{
-return 0;
+{   
+
+    int cantidad;
+    int entrada;
+    //cout << "ingrese la cantida de elementos a ingresar" << endl;
+    cin >> cantidad;
+    MaxHeap <int> *myHeap = new MaxHeap<int>(cantidad, compararPesos);
+    //cout << "ingrese los elementos" << endl;
+    for (int i = 0; i < cantidad; i++)
+    {
+        cin >> entrada;
+        myHeap->insert(entrada);
+    }
+    
+    //cout << "imprimiendo todos los elementos" << endl;
+    while(!myHeap->isEmpty() && myHeap->getNext() > 2){
+        int aux = myHeap->peek();
+        if(!(myHeap->getNext() == 2)){
+        myHeap->removePeek();
+        //cout << aux << " - " << myHeap->peek() << endl;
+        int newValue = aux - myHeap->peek();
+        myHeap->removePeek();
+        if(newValue > 0){
+        myHeap->insert(newValue);
+        }
+        }
+    }
+     if(myHeap->isEmpty()){
+        cout << 0 << endl;
+     }else{
+        cout << myHeap->peek() << endl;
+     }
+
 }
