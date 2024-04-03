@@ -57,6 +57,7 @@ public:
                 if (aux->key == _key)
                 {
                     aux->value = _value;
+                    aux->entregado = false;
                     return;
                 }
                 if (aux->next == NULL)
@@ -98,7 +99,10 @@ public:
         Node<K, V> *aux = searchNodeAux(this->table[bucket], _key);
         if (aux != NULL)
         {
+            if(aux->entregado == false){
             aux->entregado = true;
+            }
+
         }
     }
 
@@ -114,7 +118,7 @@ public:
             }
             else
             {
-                cout <<  aux->key << ' ' << aux->value << endl;
+                cout << aux->value << endl;
             }
         }else{
             cout << "Pedido no encontrado" << endl;
