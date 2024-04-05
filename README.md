@@ -28,6 +28,7 @@ g++ -std=c++11 -o nombre_del_ejecutable tu_archivo_fuente.cpp
 g++ -std=c++11 -o ejercicio1 ejercicio1.cpp  
 tests
 ejercicio1 < tests/ejercicio1/1000000.in.txt > tests/ejercicio1/1000000.out.txt
+ejercicio3 < tests/ejercicio3/10_10.in.txt > tests/ejercicio3/misalida10_10.out.txt
 
 Para ejecutar tu programa:
 

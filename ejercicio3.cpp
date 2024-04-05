@@ -20,9 +20,7 @@ private:
         int height;
         AVLNode(T element) : element(element), left(NULL), right(NULL), height(1) {}
     };
-
     AVLNode *root; // root of the tree
-
 
     int height(AVLNode *node)
     {
@@ -88,8 +86,10 @@ private:
     AVLNode *insert(AVLNode *node, T element)
     {
         /* 1. Perform the normal BST insertion */
-        if (node == NULL)
-            return new AVLNode(element);
+        if (node == NULL){
+            cant += 1;
+        return new AVLNode(element);
+        }
         if (element < node->element)
             node->left = insert(node->left, element);
         else if (element > node->element)
@@ -145,21 +145,21 @@ private:
         inOrder(node->right, each);
     }
 
-    bool contains(AVLNode *node, T value) {
-    if (node == nullptr)
-        return false;
-    if (node->element == value)
-        return true;
-    if (value < node->element)
-        return contains(node->left, value);
-    else
-        return contains(node->right, value);
-}
+    bool contains(AVLNode *node, T value)
+    {
+        if (node == nullptr)
+            return false;
+        if (node->element == value)
+            return true;
+        if (value < node->element)
+            return contains(node->left, value);
+        else
+            return contains(node->right, value);
+    }
 
 public:
-
     AVL() : root(NULL) {}
-
+    int cant = 0;
     void insert(T element)
     {
         root = insert(root, element);
@@ -175,34 +175,46 @@ public:
         inOrder(root, each);
     }
 
-    void buscarPares(AVLNode * a1, AVL<T> * a2, int K, ListImp<T> &pares)
+    void buscarPares(AVL<T> *a1, int K, ListImp<T> l1, ListImp<T> &l2)
     {
-        if (a1 == NULL)
+        for (int i = 0; i < l1.getSize(); i++)
         {
-            return;
+            if (buscarEnLista(K - l1.get(i), &l2))
+            {
+                a1->insert(l1.get(i));
+            }
         }
-        buscarPares(a1->left, a2, K, pares);
-        int complemento = K - a1->element;
-        if (a2->contains(complemento))
-        {
-        //    cout << a1->element << endl;
-            pares.insert(a1->element);
-        }
-        buscarPares(a1->right, a2, K, pares);
     }
 
-        void buscar(AVL<T> * a2, int K, ListImp<T> &pares)
+    bool buscarEnLista(T elem, ListImp<T> *l1)
     {
-        buscarPares(this->root,a2,K,pares);
+        for (int i = 0; i < l1->getSize(); i++)
+        {
+            if (l1->get(i) == elem)
+            {
+                l1->removeAt(i);
+                return true;
+            }
+        }
+        return false;
     }
 
+    void buscar(int K, ListImp<T> *l1, ListImp<T> *l2)
+    {
+        buscarPares(this, K, *l1, *l2);
+    }
 };
+
+void imprimir(int elem)
+{
+    cout << elem << endl;
+}
 
 int main()
 {
     AVL<int> *a1 = new AVL<int>();
-    AVL<int> *a2 = new AVL<int>();
-    ListImp<int> *pares = new ListImp<int>();
+    ListImp<int> *l1 = new ListImp<int>();
+    ListImp<int> *l2 = new ListImp<int>();
     int cantidad;
     int entrada;
     int K;
@@ -210,16 +222,18 @@ int main()
     for (int i = 0; i < cantidad; i++)
     {
         cin >> entrada;
-        a1->insert(entrada);
+        l1->insert(entrada);
     }
     cin >> cantidad;
     for (int i = 0; i < cantidad; i++)
     {
         cin >> entrada;
-        a2->insert(entrada);
+        l2->insert(entrada);
     }
     cin >> K;
-    a1->buscar(a2,K,*pares);
+    a1->buscar(K,l1,l2);
+    a1->buscar(K,l2,l1);
 
-    cout << pares->getSize() << endl;
+    a1->inOrder(imprimir);
+    cout << a1->cant << endl;
 }
