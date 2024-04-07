@@ -147,7 +147,7 @@ private:
 
     bool contains(AVLNode *node, T value)
     {
-        if (node == nullptr)
+        if (node == NULL)
             return false;
         if (node->element == value)
             return true;
@@ -158,8 +158,8 @@ private:
     }
 
 public:
-    AVL() : root(NULL) {}
-    int cant = 0;
+    AVL() : root(NULL), cant(0) {}
+    int cant;
     void insert(T element)
     {
         root = insert(root, element);
@@ -175,33 +175,34 @@ public:
         inOrder(root, each);
     }
 
-    void buscarPares(AVL<T> *a1, int K, ListImp<T> l1, ListImp<T> &l2)
+    int buscarPares(AVL<T> *a1, int K, ListImp<T> l1)
     {
-        for (int i = 0; i < l1.getSize(); i++)
-        {
-            if (buscarEnLista(K - l1.get(i), &l2))
-            {
-                a1->insert(l1.get(i));
+        int cont = 0;
+        for(int i = 0; i < l1.getSize(); i++){
+            if(a1->contains(K - l1.get(i))){
+                cont++;
             }
         }
+        return cont;
+        
+        
     }
 
-    bool buscarEnLista(T elem, ListImp<T> *l1)
+    bool bucarEnLista(T elem, ListImp<T> *l1)
     {
         for (int i = 0; i < l1->getSize(); i++)
         {
             if (l1->get(i) == elem)
             {
-                l1->removeAt(i);
                 return true;
             }
         }
         return false;
     }
 
-    void buscar(int K, ListImp<T> *l1, ListImp<T> *l2)
+    int buscar(int K, ListImp<T> *l1)
     {
-        buscarPares(this, K, *l1, *l2);
+      return buscarPares(this, K, *l1);
     }
 };
 
@@ -214,7 +215,6 @@ int main()
 {
     AVL<int> *a1 = new AVL<int>();
     ListImp<int> *l1 = new ListImp<int>();
-    ListImp<int> *l2 = new ListImp<int>();
     int cantidad;
     int entrada;
     int K;
@@ -228,12 +228,10 @@ int main()
     for (int i = 0; i < cantidad; i++)
     {
         cin >> entrada;
-        l2->insert(entrada);
+        a1->insert(entrada);
     }
     cin >> K;
-    a1->buscar(K,l1,l2);
-    a1->buscar(K,l2,l1);
+    int cantidadElementos = a1->buscar(K,l1);
 
-    a1->inOrder(imprimir);
-    cout << a1->cant << endl;
+    cout << cantidadElementos << endl;
 }
