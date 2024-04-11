@@ -25,7 +25,7 @@ Para compilar tu código, puedes usar el siguiente comando en la terminal:
 g++ -std=c++11 -o nombre_del_ejecutable tu_archivo_fuente.cpp
 ```
 
-g++ -std=c++11 -o ejercicio3 ejercicio3.cpp  
+g++ -std=c++11 -o ejercicio4 ejercicio4.cpp  
 tests
 ejercicio1 < tests/ejercicio1/1000000.in.txt > tests/ejercicio1/1000000.out.txt
 ejercicio3 < tests/ejercicio3/100_100.in.txt > tests/ejercicio3/misalida100_100.out.txt
