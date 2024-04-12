@@ -77,21 +77,18 @@ class Grafo_LA {
             int v = cola->get(0);
             cola->removeAt(0);
 
-            NodoLista<Arista> *ady = g->adyacentesA(v);
+            NodoLista<Arista> *ady = g->adyacentesA(v-1);
             while (ady != NULL)
             {
                 int u = ady->dato.destino;
                 if (!encolados[u-1])
                 {
-
                     cola->insert(u);
                     encolados[u-1] = true;
                 }
                 ady = ady->sig;
             }
-                  cout << (cola->isEmpty() ? "True" : "False") << endl;
         }
-        cout << "hola?" << endl;
    
         return encolados;
     }
@@ -108,7 +105,7 @@ int main()
     {
         int origen, destino;
         cin >> origen >> destino;
-        grafo->agregarArista(origen, destino);
+        grafo->agregarArista(origen-1, destino);
     }
     cin >> cantDestinos;
     int *destinosDeseados = new int[cantDestinos];
