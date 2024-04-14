@@ -99,7 +99,7 @@ int *bfs(int nodo, Grafo_LA *g, int *&encolados)
             }
             ady = ady->sig;
         }
-    }a
+    }
 
     return encolados;
 }
