@@ -30,6 +30,7 @@ tests
 ejercicio1 < tests/ejercicio1/1000000.in.txt > tests/ejercicio1/1000000.out.txt
 ejercicio3 < tests/ejercicio3/100_100.in.txt > tests/ejercicio3/misalida100_100.out.txt
 ejercicio4 < tests/ejercicio4/5_6.in.txt > tests/ejercicio4/misalida5_6.out.txt
+ejercicio5 < tests/ejercicio5/10.in.txt > tests/ejercicio5/misalida10.out.txt
 
 Para ejecutar tu programa:
 
