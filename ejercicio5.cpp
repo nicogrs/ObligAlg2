@@ -1,4 +1,3 @@
-#include <cassert>
 #include <string>
 #include <iostream>
 #include <limits>
@@ -14,6 +13,11 @@ public:
     NodoLista *sig;
     NodoLista(T _dato, NodoLista *_sig) : dato(_dato), sig(_sig){};
     NodoLista(T _dato) : dato(_dato), sig(NULL){};
+    ~NodoLista() {
+        if(sig!=NULL) {
+            delete sig;
+        }
+    }
 };
 
 class Arista
@@ -73,35 +77,109 @@ public:
     }
 };
 
-int *bfs(int nodo, Grafo_LA *g, int *&encolados)
+int bfs(int nodo, Grafo_LA *g)
 {
     int V = g->getV();
+    int *encolados = new int[V];
+    for (int i = 1; i < V; i++)
+    {
+        encolados[i] = INT_MAX;  // Inicializa con un valor que represente "no visitado"
+    }
+
     ListImp<int> *cola = new ListImp<int>();
     cola->insert(nodo);
     encolados[nodo] = 0;
 
     while (!cola->isEmpty())
     {
-        int cont = 0;
         int v = cola->get(0);
         cola->removeAt(0);
 
         NodoLista<Arista> *ady = g->adyacentesA(v);
+        NodoLista<Arista> *aux = ady;
         while (ady != NULL)
         {
             int u = ady->dato.destino;
-            cont++;
-            if (encolados[u] == -1)
+            if ((encolados[u] == INT_MAX))
             {
-                cout << "estoy en " << u << endl;
                 cola->insert(u);
-                encolados[u] = cont;
+                encolados[u] = encolados[v] + 1;
             }
             ady = ady->sig;
         }
+        delete aux;
     }
 
-    return encolados;
+    int max = 0;
+    for (int i = 1; i < V; i++)
+    {
+        if ((encolados[i] != INT_MAX))
+        {
+            max += encolados[i];
+        }
+    }
+    delete[] encolados;
+    delete cola;
+    return max;
+}
+
+double dijsktra(int origen, Grafo_LA *g)
+{
+    int *costo = new int[g->getV()]();
+    bool *visitado = new bool[g->getV()]();
+
+    for (int i = 0; i < g->getV(); i++)
+    {
+        costo[i] = INT_MAX;
+        visitado[i] = false;
+    }
+
+    costo[origen] = 0;
+
+    for (int i = 0; i < g->getV(); i++)
+    {
+        int v = -1;
+        int menorCosto = INT_MAX;
+        for (int j = 0; j < g->getV(); j++)
+        {
+            if (costo[j] < menorCosto && !visitado[j])
+            {
+                v = j;
+                menorCosto = costo[j];
+            }
+        }
+
+        if (v == -1)
+            break;
+
+        visitado[v] = true;
+
+        NodoLista<Arista> *ady = g->adyacentesA(v);
+        NodoLista<Arista> *aux = ady;
+        while (ady != NULL)
+        {
+            Arista a = ady->dato;
+            int u = a.destino;
+            int w = a.peso;
+            if (!visitado[u] && costo[u] > costo[v] + w)
+            {
+                costo[u] = costo[v] + w;
+            }
+            ady = ady->sig;
+        }
+        delete aux;
+    }
+    int max = 0;
+    for (int i = 0; i < g->getV(); i++)
+    {
+        if (visitado[i])
+        {
+            max += costo[i];
+        }
+    }
+    delete[] costo;
+    delete[] visitado;
+    return max;
 }
 
 int main()
@@ -130,29 +208,21 @@ int main()
         }
     }
 
-    int *visitados = new int[P+1]();
-    for (int i = 0; i < grafo->getV(); i++)
-    {
-        visitados[i] = -1;
-    }
-
+    int *visitados = new int[P + 1];
     int estaEn;
-    double valor = INT_MAX;
+    double valor = 100000;
     for (int i = 1; i < P + 1; i++)
     {
-       if(apariciones[i] > 1){
-        bfs(i,grafo,visitados); 
-       }
-       int aux = 0;
-       for (int i = 1; i < P + 1; i++)
-       {
-        aux += visitados[i];
-       }
-
-       if((aux / P) < valor){
-        valor = (aux / P);
-        estaEn = i;
-       }
+        double aux = 0;
+        if (apariciones[i] > 1)
+        {
+            aux = bfs(i, grafo);
+            if (aux < valor)
+            {
+                valor = aux;
+                estaEn = i;
+            }
+        }
     }
     cout << "El fugitivo está en: " << estaEn << endl;
 }
