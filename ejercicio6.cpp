@@ -2,10 +2,111 @@
 #include <string>
 #include <iostream>
 #include <limits>
-#include "ejercicio2.cpp"
+//#include "tads/MaxHeap.h"
 #include "funciones/strings.cpp"
 
 using namespace std;
+
+template <class T>
+class MaxHeap{
+    private:
+        T* heap;
+        int next;
+        int capacity;
+        int (*compereTo)(T,T);
+        
+        int father(int pos) {
+            return pos / 2;
+        }
+
+        int left(int pos){
+            return (pos * 2);
+        }
+
+        int right(int pos){
+            return (pos * 2) + 1;
+        }
+
+
+
+        void heapFloat(int pos){
+            if (pos == 1) return;
+            int fatherPos = father(pos);
+            if( this->compereTo(heap[fatherPos], heap[pos]) > 0 ){
+                swap(fatherPos, pos);
+                heapFloat(fatherPos);
+            }
+        }
+
+        void swap(int a, int b){
+            T aux = heap[a];
+            heap[a] = heap[b];
+            heap[b] = aux;
+        }
+
+        void sink(int pos){
+            int leftPos = left(pos);
+            int rightPos = right(pos);
+            bool hasLeftChild = leftPos < this->next;
+            bool hasRightChild = rightPos < this->next;
+            if(!hasLeftChild) return;
+            if(!hasRightChild){ 
+                if(this->compereTo(this->heap[pos], this->heap[left(pos)]) > 0){
+                    swap(pos, leftPos);
+                    sink(leftPos);
+                }
+            }else {
+                int posToCompare = this->compereTo(heap[leftPos], heap[rightPos]) < 0 ? leftPos : rightPos; 
+                if (this->compereTo(heap[pos],heap[posToCompare]) > 0){
+                    swap(pos, posToCompare);
+                    sink(posToCompare);
+                }
+            }
+        }
+
+    public:
+        MaxHeap(int _capacity, int (*_compereTo)(T,T)) : capacity(_capacity) {
+            this->next = 1;
+            heap = new T[_capacity + 1]();
+            this->compereTo = _compereTo;
+        }
+
+        void insert (T elem){
+            assert(!isFull());
+            heap[next] = elem;
+            next++;
+            heapFloat(next -1);
+
+        }
+
+        T peek () {
+            assert(!isEmpty());
+            return this->heap[1];
+
+        }
+        
+        void removePeek () {
+            assert(!isEmpty());
+            this->heap[1] = this->heap[next-1];
+            this->next--;
+            sink(1);
+        }
+
+        bool isFull(){
+            return next > capacity;
+        }
+
+        bool isEmpty(){
+            return next == 1;
+        }
+
+        T getNext(){
+            return this->next;
+        }
+
+};
+
+
 
 class Calle
 {
@@ -16,10 +117,45 @@ public:
     int distancia;
     int flujo;
     int estado;
-    Calle(int _origen, int _destino, int _id, int _distancia, int _flujo, int _estado) : 
-        origen(_origen), destino(_destino), id(_id), distancia(_distancia), flujo(_flujo), estado(_estado) {}
+    Calle(int _origen, int _destino, int _id, int _distancia, int _flujo, int _estado) : origen(_origen), destino(_destino), id(_id), distancia(_distancia), flujo(_flujo), estado(_estado) {}
+    Calle() {}
 
 };
+
+
+/*
+CompareTo para usar en *MaxHeap*
+Si el resultado es +, b es mas prioritaria que a
+*/
+int compararCalles(Calle a, Calle b){
+
+    int comp = a.distancia - b.distancia;
+    //si comp > 0, a tiene mas distancia -> b es mas prioritaria
+
+    if (comp == 0){
+        comp = a.estado - b.estado;
+    }
+
+    if (comp == 0){
+        comp = b.flujo - a.flujo;
+    }
+
+    if (comp == 0){
+        comp = a.id - b.id;
+    }
+
+    return comp;
+
+}
+
+
+int promedio(int total, int n){
+    int res = total/n;
+    if (total % n > total/2)
+        res += 1;
+    
+    return res;
+}
 
 class Kruskal
 {
@@ -44,6 +180,18 @@ class Kruskal
             }
         }
 
+        void imprimirCalle(Calle c){
+            cout << c.origen << " ";
+            cout << c.destino << " ";
+            cout << c.id << " ";
+            cout << c.distancia << " ";
+            cout << c.flujo << " ";
+            cout << c.estado << " ";
+
+            cout << endl;
+
+        }
+
         void procesarAristas(){
             while (!calles->isEmpty() && cant < v - 1){
                 Calle actual = calles->peek();
@@ -55,12 +203,12 @@ class Kruskal
                     estadoTotal += actual.estado;
                     cant++;
                     unir(actual.destino,actual.origen);
-                    cout << calleToString(actual) << endl;
+                    imprimirCalle(actual);
                 }
             }
 
             cout << "Distancia total a reparar: " << distanciaTotal << endl;
-            cout << "Estado promedio de las calles reparadas: " << (estadoTotal/cant) << endl;
+            cout << "Estado promedio de las calles reparadas: " << promedio(estadoTotal,cant) << endl;
         }
 
     int buscar(int i){
@@ -95,64 +243,6 @@ class Kruskal
         
 };
 
-
-Calle* stringToCalle(string str){
-
-    string* dato = split(str,' ');
-
-    int _origen = std::stoi(dato[0]);
-    int _destino = std::stoi(dato[1]);
-    int _idCalle = std::stoi(dato[2]);
-    int _distancia = std::stoi(dato[3]);
-    int _flujo = std::stoi(dato[4]);
-    int _estado = std::stoi(dato[5]);
-
-    Calle* nueva = new Calle(_origen,_destino,_idCalle,_distancia,_flujo,_estado);
-    return nueva;
-}
-
-string calleToString(Calle c){
-    string str = "";
-
-    str += c.origen + " ";
-    str += c.destino + " ";
-    str += c.id + " ";
-    str += c.distancia + " ";
-    str += c.flujo + " ";
-    str += c.estado;
-
-    return str;
-}
-
-/*
-CompareTo para usar en *MaxHeap*
-Si el resultado es +, b es mas prioritaria que a
-*/
-int compararCalles(Calle a, Calle b){
-
-    int comp = a.distancia - b.distancia;
-    //si comp > 0, a tiene mas distancia -> b es mas prioritaria
-
-    if (comp == 0){
-        comp = a.estado - b.estado;
-    }
-
-    if (comp == 0){
-        comp = b.flujo - a.flujo;
-    }
-
-    if (comp == 0){
-        comp = a.id - b.id;
-    }
-
-    return comp;
-
-}
-
-int buscar(int i){
-
-}
-
 int main()
 {
     int cantBarrios;
@@ -160,16 +250,31 @@ int main()
     int cantCalles;
     cin >> cantCalles;
 
-    MaxHeap<Calle> *heap = new MaxHeap<Calle>(cantCalles,compararCalles);
+    MaxHeap<Calle> *heap = new MaxHeap<Calle>(cantCalles, compararCalles);
+   
     for (int i = 0; i < cantCalles; i++){
-        string entrada;
-        cin >> entrada;
-        Calle* nueva = stringToCalle(entrada);
+
+        int origen;
+        cin >> origen;
+        int destino;
+        cin >> destino;
+        int id;
+        cin >> id;
+        int distancia;
+        cin >> distancia;
+        int flujo;
+        cin >> flujo;
+        int estado;
+        cin >> estado;
+        
+        Calle* nueva = new Calle(origen,destino,id,distancia,flujo,estado);
         heap->insert(*nueva);
     }
 
+
     Kruskal* k = new Kruskal(heap,cantBarrios,cantCalles);
-    k->procesarAristas();
     
+    k->procesarAristas();
+
     return 0;
 }
