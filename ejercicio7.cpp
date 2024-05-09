@@ -47,11 +47,64 @@ ALTERNATIVA B: Array donde guardo cantidad de virus con esa potencia:
     si encuentro una posicion donde P[i] > Psistema, ya salgo y entrego False (no llego a la potencia)
     Si recorro todo y salgo, entrego True
 
+    IMPORTANTE:
+        El array va de 0 a n-1, pero hay que hacer una transformacion:
+        el indice del array tiene que guardar los valores siguientes a la potencia inicial del virus, porque representa los valores que puede
+        llegar a obtener potencia.
+
+        Ejemplo
+            potencia inicial = 5
+            n = 10
+            el sistema puede tener 5 - 15 de potencia: valores mayores no alcanza porque no le dan los n
+            valores menores tampoco porque arranca en el inicial
+            cualquier valor menor al inicial lo ingreso en la posicion 0, porque automaticamente el virus "lo vence"
+            si llego a leer algun valor de virus Mayor a (potencia inicial + n), ya salgo y entrego false porque nunca voy a alcanzar
+
 */
 
 
 int main()
 {
-    // TODO
+    int potInicial;
+    cin >> potInicial;
+    int potencia = potInicial;
+    int n;
+    cin >> n;
+
+    int potMax = potInicial + n - 1; //no puedo vencer un virus con potencia > potMax
+
+    int* virus = new int[n];
+
+    for (int i = 0; i < n; i++){
+        int potV;
+        cin >> potV;
+        if (potV > potMax){
+            cout << "false";
+            return 0;
+        }
+        else {
+            // potInicial < potV <= potMax
+            int indice = potV - potInicial;
+            if (indice < 0){ //potencia de virus <= a potencia inicial, siempre se puede vencer
+                indice = 0;
+            }
+            virus[indice]++;
+        }
+    }   
+
+    for(int i = 0; i < n; i++){
+        int potReal = potInicial + i;
+        if (potReal > potencia){
+            //la potencia del virus fue muy grande
+            cout << "false";
+            return 0;
+        }
+        else {
+            potencia += potReal*virus[i]; //por cada virus de esa potencia, sumo esa potencia
+        }
+    }
+
+    cout << "true";
+
     return 0;
 }
