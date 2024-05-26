@@ -1,15 +1,17 @@
-#ifndef MAXHEAP_IMP
-#define MAXHEAP_IMP
+#ifndef MAXHEAPIMP_H
+#define MAXHEAPIMP_H
 
 #include "MaxHeap.h"
 #include <cassert>
 
+
+using namespace std;
+
 template <class T>
 
-class MaxHeapImp : public MaxHeap<T>{
-    
+class MaxHeapImp : public MaxHeap<T>
+{
     private:
-
     T* heap;
     int next;
     int capacity;
@@ -64,10 +66,8 @@ class MaxHeapImp : public MaxHeap<T>{
         }
     }
 
-    
     public:
-    
-    MaxHeap(int _capacity, int (*_compereTo)(T,T)) : capacity(_capacity) {
+    MaxHeapImp(int _capacity, int (*_compereTo)(T,T)) : capacity(_capacity) {
         this->next = 1;
         heap = new T[_capacity + 1]();
         this->compereTo = _compereTo;
@@ -108,4 +108,4 @@ class MaxHeapImp : public MaxHeap<T>{
 
 };
 
-#endif
+#endif 
