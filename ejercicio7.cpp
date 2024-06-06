@@ -11,13 +11,11 @@ int comparar(int a, int b){
     return a - b;
 }
 
-
-
 int main()
 {
     int pSistema;
     cin >> pSistema;
-
+    bool res = true;
     int n;
     cin >> n;
 
@@ -43,11 +41,15 @@ int main()
             pSistema += pot;
         }
         else {
-            return false;
+            res = false;
         }
     }
 
-    return true;
+    if(res){
+        cout << "true" << endl; 
+    }else{
+        cout << "false" << endl; 
+    }
 
     return 0;
 }
