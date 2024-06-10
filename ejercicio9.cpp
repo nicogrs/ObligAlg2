@@ -29,7 +29,7 @@ NOTAS:
 */
 
 int* primosErastotenes(int n){
-    cout << "primos hasta " << n;
+    //cout << "primos hasta " << n;
     assert(n > 0);
 
     bool* criba = new bool[n+1](); //cada indice es el numero
@@ -53,8 +53,10 @@ int* primosErastotenes(int n){
     }
 
     //Luego hago un array solo de primos
-    int* primos = new int[cantPrimos]();
-    int actual = 0;
+    //La posicion 0 es la cantidad de primos
+    int* primos = new int[cantPrimos+1]();
+    int actual = 1;
+    primos[0] = cantPrimos;
     cout << "primos: ";
     for (int i = 0; i <= n; i++){
         if (criba[i]){
@@ -63,7 +65,7 @@ int* primosErastotenes(int n){
             cout << " " << i;
         }
     }
-    cout << ".";
+    cout << "." << endl;
 
     delete[] criba;
     return primos;
@@ -88,21 +90,6 @@ int** initMatriz()
     return tab;
 }
 
-int** initMatriz(int inicial)
-{
-    int** tab = new int *[FILAS]();
-    for (int f = 0; f < FILAS; f++)
-    {
-        tab[f] = new int[COLUMNAS]();
-        for (int c = 0; c < COLUMNAS; c++)
-        {
-            tab[f][c] = inicial;
-        }
-
-    }
-    return tab;
-}
-
 int** initMatriz(int filas, int columnas, int inicial)
 {
     int** tab = new int *[filas]();
@@ -117,8 +104,6 @@ int** initMatriz(int filas, int columnas, int inicial)
     }
     return tab;
 }
-
-
 
 int ** cantCaminosTab(int * primos, int cantPrimos)
 {
@@ -172,7 +157,7 @@ int formasRec(int** &matriz, int f, int c, int* primos, int cantPrimos){
         return matriz[f][c];
     
     int res = 0;
-    int i = 0;
+    int i = 1;
     //caso sobre borde izq, solo "miro para arriba"
     if (c <= 1){
         //recorro cada primo
@@ -185,7 +170,7 @@ int formasRec(int** &matriz, int f, int c, int* primos, int cantPrimos){
 
     //caso sobre fila superior, miro "a la izquierda"
     if (f <= 1){
-        i = 0;
+        i = 1;
         //recorro cada primo
         while (i < cantPrimos && c - primos[i] >= 0 ){
             res += formasRec(matriz, f, c - primos[i], primos, cantPrimos);
@@ -195,7 +180,7 @@ int formasRec(int** &matriz, int f, int c, int* primos, int cantPrimos){
     else
 
     //caso en el medio
-    i = 0;
+    i = 1;
     //recorro cada primo
     while (i < cantPrimos && (c - primos[i] >= 0 || f - primos[i] >= 0 )){
         res += formasRec(matriz, f - primos[i], c, primos, cantPrimos);
@@ -208,12 +193,12 @@ int formasRec(int** &matriz, int f, int c, int* primos, int cantPrimos){
 }
 
 
-void imprimirMatriz(int ** matriz)
+void imprimirMatriz(int ** matriz, int fil = FILAS, int col = COLUMNAS)
 {
-    for (int f = 0; f < FILAS; f++)
+    for (int f = 0; f < fil; f++)
     {   
         cout << "" << endl;
-        for (int c = 0; c < COLUMNAS; c++)
+        for (int c = 0; c < col; c++)
         {
             cout << "[ "<< matriz[f][c] << " ]" << " ";
         }
@@ -221,16 +206,23 @@ void imprimirMatriz(int ** matriz)
     }
 }
 
+
 int main()
 {
+    int f = 13;
+    int c = 8;
 
-    int * primos = primosErastotenes(20);
-    int ** mat = cantCaminosTab(primos, sizeof(primos));
-    int ** mat2 = initMatriz(13,5,-1);
+    int * primos = primosErastotenes(max(f,c));
+    int cantPrimos = primos[0];
+    cout << "cantidad de primos " << cantPrimos << endl;
+
+    //int ** mat = cantCaminosTab(primos, sizeof(primos));
+    int ** mat2 = initMatriz(f,c,-1);
     mat2[0][0] = 1;
-    //mat2[13][5] = formasRec(mat2, 13, 5, primos, 6);
-
-    imprimirMatriz(mat);
-    //imprimirMatriz(mat2);
+    
+    mat2[f-1][c-1] = formasRec(mat2, f-1, c-1, primos, cantPrimos);
+    //imprimirMatriz(mat);
+    imprimirMatriz(mat2,f,c);
+    cout << endl << "formas: " << mat2[f-1][c-1] << endl;
     return 0;
 }
