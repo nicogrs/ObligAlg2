@@ -209,20 +209,28 @@ void imprimirMatriz(int ** matriz, int fil = FILAS, int col = COLUMNAS)
 
 int main()
 {
-    int f = 13;
-    int c = 8;
+    int f;
+    cin >> f;
+    int c;
+    cin >> c;
 
     int * primos = primosErastotenes(max(f,c));
     int cantPrimos = primos[0];
+
     cout << "cantidad de primos " << cantPrimos << endl;
 
-    //int ** mat = cantCaminosTab(primos, sizeof(primos));
+    //int ** mat = cantCaminosTab(primos, cantPrimos);
+    
     int ** mat2 = initMatriz(f,c,-1);
     mat2[0][0] = 1;
-    
     mat2[f-1][c-1] = formasRec(mat2, f-1, c-1, primos, cantPrimos);
+
     //imprimirMatriz(mat);
     imprimirMatriz(mat2,f,c);
+    int formas = mat2[f-1][c-1];
+    if (formas == -1)
+        formas = 0;
+    
     cout << endl << "formas: " << mat2[f-1][c-1] << endl;
     return 0;
 }
