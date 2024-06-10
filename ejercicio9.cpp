@@ -161,7 +161,7 @@ int formasRec(int** &matriz, int f, int c, int* primos, int cantPrimos){
     //caso sobre borde izq, solo "miro para arriba"
     if (c <= 1){
         //recorro cada primo
-        while (i < cantPrimos && f - primos[i] >= 0){
+        while (i <= cantPrimos && f - primos[i] >= 0){
             res += formasRec(matriz, f - primos[i], c, primos, cantPrimos);
             i++;
         }
@@ -172,7 +172,7 @@ int formasRec(int** &matriz, int f, int c, int* primos, int cantPrimos){
     if (f <= 1){
         i = 1;
         //recorro cada primo
-        while (i < cantPrimos && c - primos[i] >= 0 ){
+        while (i <= cantPrimos && c - primos[i] >= 0 ){
             res += formasRec(matriz, f, c - primos[i], primos, cantPrimos);
             i++;
         }
@@ -182,7 +182,7 @@ int formasRec(int** &matriz, int f, int c, int* primos, int cantPrimos){
     //caso en el medio
     i = 1;
     //recorro cada primo
-    while (i < cantPrimos && (c - primos[i] >= 0 || f - primos[i] >= 0 )){
+    while (i <= cantPrimos && (c - primos[i] >= 0 || f - primos[i] >= 0 )){
         res += formasRec(matriz, f - primos[i], c, primos, cantPrimos);
         res += formasRec(matriz, f, c - primos[i], primos, cantPrimos);
         i++;
@@ -232,5 +232,7 @@ int main()
         formas = 0;
     
     cout << endl << "formas: " << mat2[f-1][c-1] << endl;
+    
+    delete[] primos;
     return 0;
 }
