@@ -103,6 +103,21 @@ int** initMatriz(int inicial)
     return tab;
 }
 
+int** initMatriz(int filas, int columnas, int inicial)
+{
+    int** tab = new int *[filas]();
+    for (int f = 0; f < filas; f++)
+    {
+        tab[f] = new int[columnas]();
+        for (int c = 0; c < columnas; c++)
+        {
+            tab[f][c] = inicial;
+        }
+
+    }
+    return tab;
+}
+
 
 
 int ** cantCaminosTab(int * primos, int cantPrimos)
@@ -115,15 +130,16 @@ int ** cantCaminosTab(int * primos, int cantPrimos)
         for (int c = 1; c < COLUMNAS; c++)
         {
         if((c - paso -1 >= 0))
-        matriz[0][c] += matriz[0][c-paso-1] + 1; //+ matriz[0][c-paso-1] ;   
+        matriz[0][c] += matriz[0][c-paso+1] + 1; //+ matriz[0][c-paso-1] ;   
         }
     }
     for (int j = 0; j < cantPrimos ; j++)
     {
         int paso = primos[j];
-        for (int f = 1; (f - paso >= 0) && f < FILAS; f++)
+        for (int f = 1; f < FILAS; f++)
         {
-        matriz[f][0] += matriz[f-paso][0]; //+ matriz[f-paso-1][0] ;   
+        if((f - paso -1 >= 0))
+        matriz[f][0] += matriz[f-paso+1][0] + 1; //+ matriz[f-paso-1][0] ;   
         }
     }
     return matriz;
@@ -147,7 +163,7 @@ int ** cantCaminosTab(int * primos, int cantPrimos)
 
 }
 
-/* int formasRec(int** &matriz, int f, int c, int* primos){
+int formasRec(int** &matriz, int f, int c, int* primos, int cantPrimos){
     
     if (f < 0 || c < 0)
         return 0;
@@ -160,8 +176,8 @@ int ** cantCaminosTab(int * primos, int cantPrimos)
     //caso sobre borde izq, solo "miro para arriba"
     if (c <= 1){
         //recorro cada primo
-        while (i < sizeof(primos) && f - primos[i] >= 0){
-            res += formasRec(matriz, f - primos[i], c, primos);
+        while (i < cantPrimos && f - primos[i] >= 0){
+            res += formasRec(matriz, f - primos[i], c, primos, cantPrimos);
             i++;
         }
     }
@@ -171,8 +187,8 @@ int ** cantCaminosTab(int * primos, int cantPrimos)
     if (f <= 1){
         i = 0;
         //recorro cada primo
-        while (i < sizeof(primos) && c - primos[i] >= 0 ){
-            res += formasRec(matriz, f, c - primos[i], primos);
+        while (i < cantPrimos && c - primos[i] >= 0 ){
+            res += formasRec(matriz, f, c - primos[i], primos, cantPrimos);
             i++;
         }
     }
@@ -181,15 +197,15 @@ int ** cantCaminosTab(int * primos, int cantPrimos)
     //caso en el medio
     i = 0;
     //recorro cada primo
-    while (i < sizeof(primos) && (c - primos[i] >= 0 || f - primos[i] >= 0 )){
-        res += formasRec(matriz, f - primos[i], c, primos);
-        res += formasRec(matriz, f, c - primos[i], primos);
+    while (i < cantPrimos && (c - primos[i] >= 0 || f - primos[i] >= 0 )){
+        res += formasRec(matriz, f - primos[i], c, primos, cantPrimos);
+        res += formasRec(matriz, f, c - primos[i], primos, cantPrimos);
         i++;
     }
 
     matriz[f][c] = res;
     return res;
-} */
+}
 
 
 void imprimirMatriz(int ** matriz)
@@ -210,6 +226,11 @@ int main()
 
     int * primos = primosErastotenes(20);
     int ** mat = cantCaminosTab(primos, sizeof(primos));
+    int ** mat2 = initMatriz(13,5,-1);
+    mat2[0][0] = 1;
+    //mat2[13][5] = formasRec(mat2, 13, 5, primos, 6);
+
     imprimirMatriz(mat);
+    //imprimirMatriz(mat2);
     return 0;
 }
