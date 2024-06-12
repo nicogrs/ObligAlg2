@@ -75,6 +75,7 @@ int main()
         visitados[i] = new bool[N]();
     }
     bool exito = false;
+    aplicarMovimiento(visitados,inicial);
     caballoEnum(inicial,visitados,exito);
     if(exito){
         cout << "SI"<< endl;
