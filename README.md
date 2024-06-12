@@ -32,6 +32,8 @@ ejercicio3 < tests/ejercicio3/100_100.in.txt > tests/ejercicio3/misalida100_100.
 ejercicio4 < tests/ejercicio4/5_6.in.txt > tests/ejercicio4/misalida5_6.out.txt
 ejercicio5 < tests/ejercicio5/10.in.txt > tests/ejercicio5/misalida10.out.txt
 
+ejercicio10 < tests/ejercicio10/3_1.in.txt > tests/ejercicio10/misalida3_1.out.txt
+
 Para ejecutar tu programa:
 
 ```bash
