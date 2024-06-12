@@ -54,7 +54,8 @@ void caballoEnum(Posicion actual, bool **visitados, bool &exito)
                 {
                     aplicarMovimiento(visitados, nueva);
                     caballoEnum(nueva, visitados, exito);
-                    //removerMovimiento(visitados, nueva);
+                    if(exito) return;
+                    removerMovimiento(visitados, nueva);
                 }
             }
         }
