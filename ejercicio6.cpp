@@ -151,7 +151,7 @@ int compararCalles(Calle a, Calle b){
 
 int promedio(int total, int n){
     int res = total/n;
-    if (total % n > total/2)
+    if (total % n >= n/2)
         res += 1;
     
     return res;

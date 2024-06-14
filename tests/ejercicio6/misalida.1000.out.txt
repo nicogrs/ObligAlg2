@@ -998,4 +998,4 @@
 987 738 29865 3 930 6 
 272 393 8046 3 669 6 
 Distancia total a reparar: 1152
-Estado promedio de las calles reparadas: 4
+Estado promedio de las calles reparadas: 5
