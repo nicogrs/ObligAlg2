@@ -139,10 +139,6 @@ int hashModulo(string clave)
     return ret;
 }
 
-void procesarEntrada(string entrada)
-{
-}
-
 int main()
 {
     int buckets;

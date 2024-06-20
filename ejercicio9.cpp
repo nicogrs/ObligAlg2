@@ -57,37 +57,16 @@ int* primosErastotenes(int n){
     int* primos = new int[cantPrimos+1]();
     int actual = 1;
     primos[0] = cantPrimos;
-    cout << "primos: ";
     for (int i = 0; i <= n; i++){
         if (criba[i]){
             primos[actual] = i;
             actual++;
-            cout << " " << i;
         }
     }
-    cout << "." << endl;
 
     delete[] criba;
     return primos;
 
-}
-
-int COLUMNAS = 20;
-int FILAS = 20;
-
-int** initMatriz()
-{
-    int** tab = new int *[FILAS]();
-    for (int f = 0; f < FILAS; f++)
-    {
-        tab[f] = new int[COLUMNAS]();
-        for (int c = 0; c < COLUMNAS; c++)
-        {
-            tab[f][c] = 0;
-        }
-
-    }
-    return tab;
 }
 
 int** initMatriz(int filas, int columnas, int inicial)
@@ -103,49 +82,6 @@ int** initMatriz(int filas, int columnas, int inicial)
 
     }
     return tab;
-}
-
-int ** cantCaminosTab(int * primos, int cantPrimos)
-{
-    int **matriz = initMatriz();
-    matriz[0][0] = 1;
-    for (int i = 0; i < cantPrimos ; i++)
-    {
-        int paso = primos[i];
-        for (int c = 1; c < COLUMNAS; c++)
-        {
-        if((c - paso -1 >= 0))
-        matriz[0][c] += matriz[0][c-paso+1] + 1; //+ matriz[0][c-paso-1] ;   
-        }
-    }
-    for (int j = 0; j < cantPrimos ; j++)
-    {
-        int paso = primos[j];
-        for (int f = 1; f < FILAS; f++)
-        {
-        if((f - paso -1 >= 0))
-        matriz[f][0] += matriz[f-paso+1][0] + 1; //+ matriz[f-paso-1][0] ;   
-        }
-    }
-    return matriz;
-/*     // "paso recursivo"
-    for (int f = 1; f < FILAS; f++)
-    {
-        for (int c = 1; c < COLUMNAS; c++)
-        {
-            
-            matriz[f][c] = matriz[f - 1][c] + matriz[f][c - 1];
-        }
-    }
-    return matriz[FILAS - 1][COLUMNAS - 1];
-
-    int paso = primos[i];
-    matriz[f][c] = matriz[f - paso][c] + matriz[f][c-paso];
-    
-        for (int i = 0; (f - paso >= 0) && (c - paso >= 0);i++)
-            int paso = primos[i];
-            matriz[f][c] = matriz[f - paso][c] + matriz[f][c-paso]; */
-
 }
 
 int formasRec(int** &matriz, int f, int c, int* primos, int cantPrimos){
@@ -193,7 +129,7 @@ int formasRec(int** &matriz, int f, int c, int* primos, int cantPrimos){
 }
 
 
-void imprimirMatriz(int ** matriz, int fil = FILAS, int col = COLUMNAS)
+void imprimirMatriz(int ** matriz, int fil, int col)
 {
     for (int f = 0; f < fil; f++)
     {   
@@ -217,21 +153,16 @@ int main()
     int * primos = primosErastotenes(max(f,c));
     int cantPrimos = primos[0];
 
-    cout << "cantidad de primos " << cantPrimos << endl;
 
-    //int ** mat = cantCaminosTab(primos, cantPrimos);
-    
     int ** mat2 = initMatriz(f,c,-1);
     mat2[0][0] = 1;
     mat2[f-1][c-1] = formasRec(mat2, f-1, c-1, primos, cantPrimos);
 
-    //imprimirMatriz(mat);
-    imprimirMatriz(mat2,f,c);
     int formas = mat2[f-1][c-1];
     if (formas == -1)
         formas = 0;
     
-    cout << endl << "formas: " << mat2[f-1][c-1] << endl;
+    cout << mat2[f-1][c-1] << endl;
     
     delete[] primos;
     return 0;
