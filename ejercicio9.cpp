@@ -21,15 +21,9 @@ Para llegar a la casilla (x-1,y-1):
             /p/  formas(a-p,b) para todo p < a. p > 0.
         --Llegando desde izquierda idem pero simetrico
 
-NOTAS:
-    -si a == b, la matriz es simetrica
-    -estando en la seccion "cuadrada" de la matriz tambien
-
-
 */
 
 int* primosErastotenes(int n){
-    //cout << "primos hasta " << n;
     assert(n > 0);
 
     bool* criba = new bool[n+1](); //cada indice es el numero

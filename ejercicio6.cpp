@@ -2,7 +2,6 @@
 #include <string>
 #include <iostream>
 #include <limits>
-//#include "tads/MaxHeap.h"
 #include "funciones/strings.cpp"
 
 using namespace std;
